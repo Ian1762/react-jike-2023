@@ -1,6 +1,5 @@
 import BarChart from "./components/BarChart";
 
-
 const Home = () => {
     return (
         <div>
