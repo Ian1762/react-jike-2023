@@ -6,8 +6,8 @@ import { request } from '@/utils'
 
 export function loginAPI(data) {
     return request({
-        method: 'POST',
         url: '/authorizations',
+        method: 'POST',
         data
     })
 }
@@ -16,7 +16,7 @@ export function loginAPI(data) {
 
 export function getUserInfoAPI() {
     return request({
+        url: '/user/profile',
         method: 'GET',
-        url: '/user/profile'
     })
 }
