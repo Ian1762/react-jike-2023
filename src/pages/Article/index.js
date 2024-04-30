@@ -5,6 +5,7 @@ import locale from 'antd/es/date-picker/locale/zh_CN'
 import { Table, Tag, Space } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import img404 from '@/assets/error.png'
+import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -78,6 +79,8 @@ const Article = () => {
             title: 'wkwebview离线化加载h5资源解决方案'
         }
     ]
+    // 获取频道列表
+    const { channelList } = useChannel()
     return (
         <div>
             <Card
@@ -104,8 +107,7 @@ const Article = () => {
                             defaultValue="lucy"
                             style={{ width: 120 }}
                         >
-                            <Option value="jack">Jack</Option>
-                            <Option value="lucy">Lucy</Option>
+                            {channelList.map(channel => <Option key={channel.id} value={channel.id}>{channel.name}</Option>)}
                         </Select>
                     </Form.Item>
 
@@ -121,6 +123,7 @@ const Article = () => {
                     </Form.Item>
                 </Form>
             </Card>
+            {/* 列表数据 */}
             <Card title={`根据筛选条件共查询到 count 条结果：`}>
                 <Table rowKey="id" columns={columns} dataSource={data} />
             </Card>
