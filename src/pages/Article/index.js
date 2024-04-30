@@ -14,6 +14,11 @@ const { RangePicker } = DatePicker
 
 const Article = () => {
     // 准备列数据
+    // 定义状态枚举
+    const status = {
+        1: <Tag color="warning">待审核</Tag>,
+        2: <Tag color="green">审核通过</Tag>
+    }
     const columns = [
         {
             title: '封面',
@@ -31,7 +36,10 @@ const Article = () => {
         {
             title: '状态',
             dataIndex: 'status',
-            render: data => <Tag color="green">审核通过</Tag>
+            // data 后端返回的状态status 根据他做条件渲染
+            // data === 1 => 待审核
+            // data === 2 => 审核通过
+            render: data => status[data]
         },
         {
             title: '发布时间',
@@ -107,7 +115,7 @@ const Article = () => {
                 }
                 style={{ marginBottom: 20 }}
             >
-                <Form initialValues={{ status: '' }}>
+                <Form initialValues={{ status: '', channel_id: '推荐' }}>
                     <Form.Item label="状态" name="status">
                         <Radio.Group>
                             <Radio value={''}>全部</Radio>
@@ -119,7 +127,6 @@ const Article = () => {
                     <Form.Item label="频道" name="channel_id">
                         <Select
                             placeholder="请选择文章频道"
-                            defaultValue="lucy"
                             style={{ width: 120 }}
                         >
                             {channelList.map(channel => <Option key={channel.id} value={channel.id}>{channel.name}</Option>)}
