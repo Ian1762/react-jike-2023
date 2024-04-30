@@ -7,7 +7,8 @@ import {
     Input,
     Upload,
     Space,
-    Select
+    Select,
+    message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
@@ -20,6 +21,7 @@ import { getChannelsAPI, createArticleAPI } from '@/apis/article'
 const { Option } = Select
 
 const Publish = () => {
+    const [form] = Form.useForm();
     // 获取频道列表
     const [channelList, setChannelList] = useState([])
 
@@ -34,18 +36,23 @@ const Publish = () => {
     }, [])
 
     // 提交表单
-    const onFinish = (formData) => {
+    const onFinish = async (formData) => {
         // console.log(formData)
+        // 校验封面类型是否和上传图片的数量一致
+        if (imageList.length !== imageType) return message.warning('封面类型和图片数量不匹配')
         // 1.按照接口文档的格式处理收集到的表单数据
         const reqData = {
             ...formData,
             cover: {
-                type: 0,
-                images: []
+                type: imageType,
+                images: imageList.map(item => item.response?.data?.url)
             }
         }
         // 2.调用接口提交
-        createArticleAPI(reqData)
+        await createArticleAPI(reqData)
+
+        // 提交完成后表单重制
+        form.resetFields();
     }
 
     // 上传图片
@@ -73,6 +80,7 @@ const Publish = () => {
                 }
             >
                 <Form
+                    form={form}
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 16 }}
                     initialValues={{ type: 0 }}
@@ -108,6 +116,7 @@ const Publish = () => {
                             name="image"
                             action={'http://geek.itheima.net/v1_0/upload'}
                             onChange={onUploadChange}
+                            maxCount={imageType}
                         >
                             <div style={{ marginTop: 8 }}>
                                 <PlusOutlined />
