@@ -16,7 +16,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { createArticleAPI, getArticleByIdAPI } from '@/apis/article'
+import { createArticleAPI, getArticleByIdAPI, updateArticleAPI } from '@/apis/article'
 import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
@@ -36,14 +36,26 @@ const Publish = () => {
             ...formData,
             cover: {
                 type: imageType,
-                images: imageList.map(item => item.response?.data?.url)
+                // 这里只是新建文章时处理url的方式 编辑页面时处理方式需要改变
+                images: imageList.map(item => {
+                    if (item.response) {
+                        return item.response.data.url
+                    } else {
+                        return item.url
+                    }
+                })
             }
         }
         // 2.调用接口提交
-        await createArticleAPI(reqData)
+        if (articleId) {
+            await updateArticleAPI({ ...reqData, id: articleId })
+        } else {
+            await createArticleAPI(reqData)
+        }
 
         // 提交完成后表单重制
-        form.resetFields();
+        // console.log('提交成功', articleId)
+        !articleId && form.resetFields();
     }
 
     // 上传图片

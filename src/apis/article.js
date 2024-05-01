@@ -18,7 +18,16 @@ export function createArticleAPI(data) {
     })
 }
 
-// 3.获取文章列表  
+// 编辑文章表单
+export function updateArticleAPI(data) {
+    return request({
+        url: `/mp/articles/${data.id}?draft=false`,
+        method: 'PUT',
+        data,
+    })
+}
+
+// 获取文章列表  
 export function getArticleListAPI(params) {
     return request({
         url: '/mp/articles',
@@ -27,7 +36,7 @@ export function getArticleListAPI(params) {
     })
 }
 
-// 4.删除文章
+// 删除文章
 export function deleteArticleAPI(articleId) {
     return request({
         url: `/mp/articles/${articleId}`,
@@ -35,7 +44,7 @@ export function deleteArticleAPI(articleId) {
     })
 }
 
-// 5.获取指定文章
+// 获取指定文章
 export function getArticleByIdAPI(articleId) {
     return request({
         url: `/mp/articles/${articleId}`,
