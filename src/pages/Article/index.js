@@ -89,21 +89,46 @@ const Article = () => {
             title: 'wkwebview离线化加载h5资源解决方案'
         }
     ]
+
     // 获取频道列表
     const { channelList } = useChannel()
 
+    // 筛选功能实现
+    // 1. 收集筛选条件
+    const [reqData, setReqData] = useState({
+        status: '',
+        channel_id: '',
+        page: 1,
+        per_page: 4,
+        begin_pubdate: '',
+        end_pubdate: '',
+    })
+    // 2. 监听筛选条件变化
+    const onFinish = (formData) => {
+        // console.log(formData)
+        setReqData({
+            ...reqData,
+            channel_id: formData.channel_id,
+            status: formData.status,
+            begin_pubdate: formData.date?.[0]?.format('YYYY-MM-DD'),
+            end_pubdate: formData.date?.[1]?.format('YYYY-MM-DD'),
+        })
+    }
+
+    // 3. 发送请求
     // 获取文章列表
     const [list, setList] = useState([])
     const [count, setCount] = useState(0)
     useEffect(() => {
         const getList = async () => {
-            const res = await getArticleListAPI()
+            const res = await getArticleListAPI(reqData)
             // console.log(res)
             setList(res.data.results)
             setCount(res.data.total_count)
         }
         getList()
-    }, [])
+    }, [reqData])
+
     return (
         <div>
             <Card
@@ -115,7 +140,7 @@ const Article = () => {
                 }
                 style={{ marginBottom: 20 }}
             >
-                <Form initialValues={{ status: '', channel_id: '推荐' }}>
+                <Form initialValues={{ status: '' }} onFinish={onFinish}>
                     <Form.Item label="状态" name="status">
                         <Radio.Group>
                             <Radio value={''}>全部</Radio>
