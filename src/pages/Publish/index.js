@@ -11,12 +11,12 @@ import {
     message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { createArticleAPI } from '@/apis/article'
+import { createArticleAPI, getArticleByIdAPI } from '@/apis/article'
 import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
@@ -59,6 +59,22 @@ const Publish = () => {
         // console.log(e.target.value)
         setImageType(e.target.value)
     }
+
+    // 通过id回到这个页面，编辑
+    const [searchParams] = useSearchParams()
+    const articleId = searchParams.get('id')
+    useEffect(() => {
+        // 获取id
+        // console.log(articleId)
+        // 根据id获取文章详情
+        async function getArticleDetail() {
+            const res = await getArticleByIdAPI(articleId)
+            // 调用form实例方法，回填数据
+            form.setFieldsValue(res.data)
+        }
+
+        articleId && getArticleDetail()
+    }, [articleId, form])
     return (
         <div className="publish">
             <Card

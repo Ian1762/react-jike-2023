@@ -34,3 +34,11 @@ export function deleteArticleAPI(articleId) {
         method: 'DELETE',
     })
 }
+
+// 5.获取指定文章
+export function getArticleByIdAPI(articleId) {
+    return request({
+        url: `/mp/articles/${articleId}`,
+        method: 'GET',
+    })
+}
